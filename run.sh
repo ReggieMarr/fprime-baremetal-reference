@@ -154,13 +154,13 @@ case $1 in
     ;;
   "build")
 
-    BUILD_FLIGHT_SW="fprime-util build teensy41 -j10"
+    BUILD_FLIGHT_SW="fprime-util build teensy41 -j10 --all "
     # For building we don't need dependent containers
     FLAGS="${START_MODE} --no-deps --user $(id -u):$(id -g) -w ${DEPLOYMENT_ROOT}"
 
     if [ "${BUILD_CLEAN}" -eq "1" ]; then
       echo 'Will clean and regnerate fpp derived files'
-      BUILD_FLIGHT_SW="fprime-util purge --force && fprime-util generate teensy41 && ${BUILD_FLIGHT_SW} --all"
+      BUILD_FLIGHT_SW="fprime-util purge --force && fprime-util generate teensy41 && ${BUILD_FLIGHT_SW}"
     fi
 
     if [ "${AS_HOST}" -eq "1" ]; then
@@ -177,12 +177,12 @@ case $1 in
     # Capture the exit code
     EXIT_CODE=$?
 
-    # echo "replacing /fsw/ with ${SCRIPT_DIR}"
-    # sed -i "s|/fsw|${SCRIPT_DIR}|g" "${SCRIPT_DIR}/build-fprime-automatic-due/compile_commands.json"
+    echo "replacing /fsw/ with ${SCRIPT_DIR}"
+    sed -i "s|/fsw|${SCRIPT_DIR}|g" "${SCRIPT_DIR}/build-fprime-automatic-teensy41/compile_commands.json"
 
     # if [ "${SET_THREAD_CTRL}" -eq "1" ]; then
     #     echo 'Setting thread control for non-sudo host execution'
-    #     sudo setcap 'cap_sys_nice+ep' "${SCRIPT_DIR}/build-artifacts/Linux/FlightComputer/bin/FlightComputer"
+    #     sudo setcap 'cap_sys_nice+ep' "${SCRIPT_DIR}/build-artifacts/teensy41/due_dev/bin/due_dev"
     # fi
 
     exit $EXIT_CODE
