@@ -28,7 +28,8 @@
       "description": "F´ Cross-Compile build using local fprime-venv",
       "binaryDir": "${sourceDir}/build-fprime-automatic-teensy41",
       "cacheVariables": {
-        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/lib/fprime-arduino/cmake/toolchain/teensy41.cmake"
+        "CMAKE_TOOLCHAIN_FILE": "${sourceDir}/lib/fprime-arduino/cmake/toolchain/teensy41.cmake",
+        "CMAKE_DEBUG_OUTPUT": "ON"
       }
     }
   ]

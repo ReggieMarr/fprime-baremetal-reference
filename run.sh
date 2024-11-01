@@ -177,13 +177,13 @@ case $1 in
     # Capture the exit code
     EXIT_CODE=$?
 
-    echo "replacing /fsw/ with ${SCRIPT_DIR}"
-    sed -i "s|/fsw|${SCRIPT_DIR}|g" "${SCRIPT_DIR}/build-fprime-automatic-due/compile_commands.json"
+    # echo "replacing /fsw/ with ${SCRIPT_DIR}"
+    # sed -i "s|/fsw|${SCRIPT_DIR}|g" "${SCRIPT_DIR}/build-fprime-automatic-due/compile_commands.json"
 
-    if [ "${SET_THREAD_CTRL}" -eq "1" ]; then
-        echo 'Setting thread control for non-sudo host execution'
-        sudo setcap 'cap_sys_nice+ep' "${SCRIPT_DIR}/build-artifacts/Linux/FlightComputer/bin/FlightComputer"
-    fi
+    # if [ "${SET_THREAD_CTRL}" -eq "1" ]; then
+    #     echo 'Setting thread control for non-sudo host execution'
+    #     sudo setcap 'cap_sys_nice+ep' "${SCRIPT_DIR}/build-artifacts/Linux/FlightComputer/bin/FlightComputer"
+    # fi
 
     exit $EXIT_CODE
     ;;
