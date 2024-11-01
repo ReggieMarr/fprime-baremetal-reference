@@ -1,0 +1,29 @@
+####
+# F prime CMakeLists.txt:
+#
+# SOURCE_FILES: combined list of source and autocoding files
+# MOD_DEPS: (optional) module dependencies
+####
+
+set(SOURCE_FILES
+  "${CMAKE_CURRENT_LIST_DIR}/instances.fpp"
+  "${CMAKE_CURRENT_LIST_DIR}/due_devPackets.xml"
+  "${CMAKE_CURRENT_LIST_DIR}/topology.fpp"
+  "${CMAKE_CURRENT_LIST_DIR}/due_devTopology.cpp"
+)
+
+# set(MOD_DEPS
+#   Fw/Logger
+#   # Arduino/ArduinoTime
+#   Os/RawTime
+#   Arduino/Drv/StreamDriver
+#   Os/TaskRunner
+#   Os/Task
+# )
+set(MOD_DEPS
+  Fw/Logger
+  Arduino/Drv/StreamDriver
+  fprime-baremetal/Os/TaskRunner
+)
+
+register_fprime_module()
