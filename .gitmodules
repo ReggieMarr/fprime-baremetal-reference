@@ -13,3 +13,6 @@
 	path = lib/fprime-baremetal
 	url = https://github.com/fprime-community/fprime-baremetal.git
 	branch = size-utilility
+[submodule "lib/arduino-cli-cmake-wrapper"]
+	path = lib/arduino-cli-cmake-wrapper
+	url = https://github.com/SterlingPeet/arduino-cli-cmake-wrapper.git
