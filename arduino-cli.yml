@@ -1,0 +1,23 @@
+board_manager:
+  additional_urls:
+    - https://downloads.arduino.cc/packages/package_index.json
+    - https://downloads.arduino.cc/packages/package_staging_index.json
+daemon:
+  port: "50051"
+directories:
+  data: /home/user/.arduino15
+  downloads: /home/user/.arduino15/staging
+  user: /home/user/Arduino
+library:
+  enable_unsafe_install: true
+# libraries:
+#   - /custom_libs
+logging:
+  file: ""
+  format: text
+  level: info
+metrics:
+  addr: :9090
+  enabled: true
+sketch:
+  always_export_binaries: false
