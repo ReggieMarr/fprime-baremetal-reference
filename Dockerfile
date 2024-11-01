@@ -86,7 +86,8 @@ RUN curl -fsSL https://raw.githubusercontent.com/arduino/arduino-cli/master/inst
 # NOTE using development version for now
 RUN pip install --upgrade asyncio
 RUN pip install --upgrade --no-cache-dir setuptools>=61
-RUN pip install -e ./lib/arduino-cli-cmake-wrapper/
+# RUN pip install -e ./lib/arduino-cli-cmake-wrapper/
+RUN pip install arduino-cli-cmake-wrapper==0.2.0a1
 
 # Create default config file
 RUN arduino-cli config init
