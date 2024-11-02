@@ -25,13 +25,13 @@ module due_dev {
     instance deframer
     instance eventLogger
     instance fatalAdapter
-    instance fatalHandler
+    # instance fatalHandler
     instance framer
     instance rateDriver
     instance rateGroup1
     instance rateGroupDriver
     instance staticMemory
-    instance systemResources
+    # instance systemResources
     instance textLogger
     instance timeHandler
     instance tlmSend
@@ -62,12 +62,12 @@ module due_dev {
       rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup1] -> rateGroup1.CycleIn
       rateGroup1.RateGroupMemberOut[0] -> commDriver.schedIn
       rateGroup1.RateGroupMemberOut[1] -> tlmSend.Run
-      rateGroup1.RateGroupMemberOut[2] -> systemResources.run
+      # rateGroup1.RateGroupMemberOut[2] -> systemResources.run
     }
 
-    connections FaultProtection {
-      eventLogger.FatalAnnounce -> fatalHandler.FatalReceive
-    }
+    # connections FaultProtection {
+    #   eventLogger.FatalAnnounce -> fatalHandler.FatalReceive
+    # }
 
     connections Downlink {
 

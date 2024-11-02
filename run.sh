@@ -23,6 +23,25 @@ check_port() {
     return 0
 }
 
+find_arduino_port() {
+    local port=""
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        port=$(ls /dev/cu.usbmodem* 2>/dev/null | head -n 1)
+    elif [[ "$OSTYPE" == "linux-gnu"* ]]; then
+        port=$(ls /dev/ttyACM* 2>/dev/null | head -n 1)
+    else
+        echo "Unsupported OS for automatic port detection"
+        return 1
+    fi
+
+    if [ -z "$port" ]; then
+        echo "Arduino Due not found"
+        return 1
+    fi
+
+    echo "$port"
+}
+
 # Help function
 show_help() {
   echo "Usage: $(basename "$0") [OPTIONS] COMMAND"
@@ -154,13 +173,13 @@ case $1 in
     ;;
   "build")
 
-    BUILD_FLIGHT_SW="fprime-util build teensy41 -j10 --all "
+    BUILD_FLIGHT_SW="fprime-util build -j10 --all "
     # For building we don't need dependent containers
     FLAGS="${START_MODE} --no-deps --user $(id -u):$(id -g) -w ${DEPLOYMENT_ROOT}"
 
     if [ "${BUILD_CLEAN}" -eq "1" ]; then
       echo 'Will clean and regnerate fpp derived files'
-      BUILD_FLIGHT_SW="fprime-util purge --force && fprime-util generate teensy41 && ${BUILD_FLIGHT_SW}"
+      BUILD_FLIGHT_SW="fprime-util purge --force && fprime-util generate && ${BUILD_FLIGHT_SW}"
     fi
 
     if [ "${AS_HOST}" -eq "1" ]; then
@@ -178,7 +197,7 @@ case $1 in
     EXIT_CODE=$?
 
     echo "replacing /fsw/ with ${SCRIPT_DIR}"
-    sed -i "s|/fsw|${SCRIPT_DIR}|g" "${SCRIPT_DIR}/build-fprime-automatic-teensy41/compile_commands.json"
+    sed -i "s|/fsw|${SCRIPT_DIR}|g" "${SCRIPT_DIR}/build-fprime-automatic-arduinodue/compile_commands.json"
 
     # if [ "${SET_THREAD_CTRL}" -eq "1" ]; then
     #     echo 'Setting thread control for non-sudo host execution'
@@ -193,13 +212,23 @@ case $1 in
         echo "Error: must select container to inspect"
         exit 1
     else
-        CONTAINER_NAME=$2
+        SERVICE_NAME=$2
     fi
+
     FLAGS="${START_MODE} --no-deps --user $(id -u):$(id -g)"
 
-    CMD="docker compose run $FLAGS ${CONTAINER_NAME} bash"
+    PORT=$(find_arduino_port)
 
-    echo $CMD
+    if [ $? -eq 0 ]; then
+        echo "Found Device on port: $PORT"
+        export DEVICE_PORT=$PORT
+        SERVICE_NAME="${SERVICE_NAME}-with-device"
+    else
+        echo "No Arduino Due found, continuing without device access"
+    fi
+
+    CMD="docker compose run $FLAGS ${SERVICE_NAME} bash"
+    echo "${CMD}"
     eval "${CMD}"
     ;;
   "test")

@@ -69,3 +69,9 @@ services:
       gds:
         condition: service_healthy
         restart: true
+
+  # extended service that leverages a host device
+  fsw-with-device:
+      extends: fsw
+      devices:
+        - "${DEVICE_PORT}:/dev/ttyACM0"

@@ -44,7 +44,7 @@ module due_dev {
 
   instance fatalAdapter: Svc.AssertFatalAdapter base id 0x4200
 
-  instance fatalHandler: Svc.FatalHandler base id 0x4300
+  # instance fatalHandler: Svc.FatalHandler base id 0x4300
 
   instance timeHandler: Arduino.ArduinoTime base id 0x4400 \
 
@@ -56,7 +56,7 @@ module due_dev {
 
   instance deframer: Svc.Deframer base id 0x4800
 
-  instance systemResources: Svc.SystemResources base id 0x4900
+  # instance systemResources: Svc.SystemResources base id 0x4900
 
   instance rateDriver: Arduino.HardwareRateDriver base id 0x4A00
 

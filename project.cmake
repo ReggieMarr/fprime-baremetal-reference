@@ -3,7 +3,7 @@
 
 add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/lib")
 add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/Components")
-add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/BaremetalReference")
-add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/RadioPassthrough")
-add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/BaseDeployment")
-# add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/due_dev/")
+# add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/BaremetalReference")
+# add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/RadioPassthrough")
+# add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/BaseDeployment")
+add_fprime_subdirectory("${CMAKE_CURRENT_LIST_DIR}/due_dev/")
