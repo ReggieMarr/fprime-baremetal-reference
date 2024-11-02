@@ -206,6 +206,34 @@ case $1 in
 
     exit $EXIT_CODE
     ;;
+  "upload")
+    FLAGS="${START_MODE} --no-deps --user $(id -u):$(id -g)"
+
+    HOST_PORT=$(find_arduino_port)
+
+    if [ $? -ne 0 ]; then
+        echo "Failed to find Arduino Due port. Make sure it's connected."
+        exit 1
+    fi
+    export DEVICE_PORT=$HOST_PORT
+
+    PROG_BIN="/home/user/.arduino15/packages/arduino/tools/bossac/1.6.1-arduino/bossac"
+    TARGET="build-artifacts/arduinodue/due_dev/bin/due_dev.elf.bin"
+
+    # Reset sequence to enter bootloader mode
+    RESET_CMD="stty -F ${CONTAINER_PORT} 1200 && sleep 0.5"
+
+    # Wait for port to reappear after reset
+    WAIT_CMD="while [ ! -c ${CONTAINER_PORT} ]; do sleep 0.1; done && sleep 0.5"
+
+    # Combine reset, wait, and upload commands
+    UPLOAD_CMD="$PROG_BIN -i -d --port=${CONTAINER_PORT} -U false -e -w -b $TARGET -R"
+    UPLOAD_CMD="$RESET_CMD && $WAIT_CMD && ${UPLOAD_CMD}"
+
+    CMD="docker compose run $FLAGS fsw-with-device bash -c \"${UPLOAD_CMD}\""
+    echo "${CMD}"
+    eval "${CMD}"
+    ;;
   "inspect")
     echo "Running $2 container interactively..."
     if [ -z "$2" ]; then
@@ -214,7 +242,6 @@ case $1 in
     else
         SERVICE_NAME=$2
     fi
-
     FLAGS="${START_MODE} --no-deps --user $(id -u):$(id -g)"
 
     PORT=$(find_arduino_port)

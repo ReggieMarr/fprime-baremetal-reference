@@ -21,6 +21,8 @@ RUN if getent group $HOST_GID; then groupmod -n user $(getent group $HOST_GID | 
     if getent passwd $HOST_UID; then usermod -l user -d /home/user -m $(getent passwd $HOST_UID | cut -d: -f1); else useradd -u $HOST_UID -g $HOST_GID -m user; fi && \
     echo 'user ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
+RUN usermod -a -G dialout user
+
 # Create virtual environment
 ENV VIRTUAL_ENV=/home/user/venv
 RUN python3 -m venv $VIRTUAL_ENV
