@@ -221,13 +221,13 @@ case $1 in
     TARGET="build-artifacts/arduinodue/due_dev/bin/due_dev.elf.bin"
 
     # Reset sequence to enter bootloader mode
-    RESET_CMD="stty -F ${CONTAINER_PORT} 1200 && sleep 0.5"
+    RESET_CMD="sudo stty -F /dev/${CONTAINER_PORT} 1200 && sleep 0.5"
 
     # Wait for port to reappear after reset
-    WAIT_CMD="while [ ! -c ${CONTAINER_PORT} ]; do sleep 0.1; done && sleep 0.5"
+    WAIT_CMD="while [ ! -c /dev/${CONTAINER_PORT} ]; do sleep 0.1; done && sleep 0.5"
 
     # Combine reset, wait, and upload commands
-    UPLOAD_CMD="$PROG_BIN -i -d --port=${CONTAINER_PORT} -U false -e -w -b $TARGET -R"
+    UPLOAD_CMD="sudo $PROG_BIN -i -d --port=${CONTAINER_PORT} -U false -e -w -v -b $TARGET -R"
     UPLOAD_CMD="$RESET_CMD && $WAIT_CMD && ${UPLOAD_CMD}"
 
     CMD="docker compose run $FLAGS fsw-with-device bash -c \"${UPLOAD_CMD}\""

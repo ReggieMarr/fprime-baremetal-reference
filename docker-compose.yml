@@ -74,4 +74,4 @@ services:
   fsw-with-device:
       extends: fsw
       devices:
-        - "${DEVICE_PORT}:${CONTAINER_PORT}"
+        - "${DEVICE_PORT}:/dev/${CONTAINER_PORT}"
