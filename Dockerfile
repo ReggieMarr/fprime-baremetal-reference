@@ -21,7 +21,16 @@ RUN if getent group $HOST_GID; then groupmod -n user $(getent group $HOST_GID | 
     if getent passwd $HOST_UID; then usermod -l user -d /home/user -m $(getent passwd $HOST_UID | cut -d: -f1); else useradd -u $HOST_UID -g $HOST_GID -m user; fi && \
     echo 'user ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-RUN usermod -a -G dialout user
+RUN groupadd -f dialout && usermod -a -G dialout user
+
+# Grant permissions to /dev/tty* devices (required to avoid sudo for serial access)
+RUN sudo chown user:dialout /dev/tty* || true
+
+# Make sure udev rules are in place to allow non-root USB device access
+RUN echo 'SUBSYSTEM=="usb", ATTR{idVendor}=="2341", ATTR{idProduct}=="003d", MODE="0666", GROUP="dialout"' > /etc/udev/rules.d/99-arduino.rules
+
+# Start udev service in the container (necessary for some Docker versions)
+RUN service udev start
 
 # Create virtual environment
 ENV VIRTUAL_ENV=/home/user/venv
