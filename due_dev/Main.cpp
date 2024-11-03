@@ -27,15 +27,16 @@ void setup() {
     Serial.begin(115200);
     static_cast<Os::Arduino::StreamConsoleHandle*>(Os::Console::getSingleton().getHandle())->setStreamHandler(Serial);
 
+    delay(1000);
+    Fw::Logger::log("Program Started\n");
+
     // Object for communicating state to the reference topology
     due_dev::TopologyState inputs;
     inputs.uartNumber = 0;
     inputs.uartBaud = 115200;
 
-    // Setup topology
+    // Setup, cycle, and teardown topology
     due_dev::setupTopology(inputs);
-
-    Fw::Logger::log("Program Started\n");
 }
 
 /**

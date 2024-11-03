@@ -16,6 +16,7 @@ module due_dev {
     # ----------------------------------------------------------------------
 
     instance cmdDisp
+    # instance commQueue
     instance deframer
     instance eventLogger
     instance fatalAdapter
@@ -35,7 +36,6 @@ module due_dev {
     # Arduino specific components
     instance blinker
     instance gpioDriver
-    instance gpioRadioReset
     # instance i2cDriver
     instance comDriver ## disable when using radio
 
