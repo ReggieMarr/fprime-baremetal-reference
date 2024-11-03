@@ -4,15 +4,10 @@ module due_dev {
   # Symbolic constants for port numbers
   # ----------------------------------------------------------------------
 
-    enum Ports_RateGroups {
-      rateGroup1
-    }
-
-    enum Ports_StaticMemory {
-      framer
-      deframer
-      deframing
-    }
+  enum Ports_RateGroups {
+    rateGroup1
+    rateGroup2
+  }
 
   topology due_dev {
 
@@ -21,7 +16,6 @@ module due_dev {
     # ----------------------------------------------------------------------
 
     instance cmdDisp
-    instance commDriver
     instance deframer
     instance eventLogger
     instance fatalAdapter
@@ -29,12 +23,21 @@ module due_dev {
     instance framer
     instance rateDriver
     instance rateGroup1
+    instance rateGroup2
     instance rateGroupDriver
     instance staticMemory
     # instance systemResources
     instance textLogger
-    instance timeHandler
+    instance systemTime
     instance tlmSend
+    instance bufferManager
+
+    # Arduino specific components
+    instance blinker
+    instance gpioDriver
+    instance gpioRadioReset
+    # instance i2cDriver
+    instance comDriver ## disable when using radio
 
     # ----------------------------------------------------------------------
     # Pattern graph specifiers
@@ -48,7 +51,7 @@ module due_dev {
 
     text event connections instance textLogger
 
-    time connections instance timeHandler
+    time connections instance systemTime
 
     # ----------------------------------------------------------------------
     # Direct graph specifiers
@@ -60,43 +63,48 @@ module due_dev {
 
       # Rate group 1
       rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup1] -> rateGroup1.CycleIn
-      rateGroup1.RateGroupMemberOut[0] -> commDriver.schedIn
-      rateGroup1.RateGroupMemberOut[1] -> tlmSend.Run
-      # rateGroup1.RateGroupMemberOut[2] -> systemResources.run
+      rateGroup1.RateGroupMemberOut[0] -> comDriver.schedIn #rfm69.run
+      rateGroup1.RateGroupMemberOut[1] -> blinker.run
+
+      # Rate group 2
+      rateGroupDriver.CycleOut[Ports_RateGroups.rateGroup2] -> rateGroup2.CycleIn
+      rateGroup2.RateGroupMemberOut[0] -> tlmSend.Run
+      rateGroup2.RateGroupMemberOut[1] -> bufferManager.schedIn
+      # rateGroup2.RateGroupMemberOut[0] -> systemResources.run
+      # rateGroup2.RateGroupMemberOut[2] -> imu.run
     }
 
     # connections FaultProtection {
     #   eventLogger.FatalAnnounce -> fatalHandler.FatalReceive
     # }
 
-    connections Downlink {
+    connections SerialComms {
+
+      # Downlink
 
       tlmSend.PktSend -> framer.comIn
       eventLogger.PktSend -> framer.comIn
 
-      framer.framedAllocate -> staticMemory.bufferAllocate[Ports_StaticMemory.framer]
-      framer.framedOut -> commDriver.$send
+      framer.framedAllocate -> bufferManager.bufferGetCallee
+      framer.framedOut -> comDriver.$send
+      comDriver.deallocate -> bufferManager.bufferSendIn
 
-      commDriver.deallocate -> staticMemory.bufferDeallocate[Ports_StaticMemory.framer]
+      # Uplink
+      comDriver.$recv ->deframer.framedIn
+      comDriver.allocate -> bufferManager.bufferGetCallee
 
-    }
-    
-    connections Uplink {
-
-      commDriver.allocate -> staticMemory.bufferAllocate[Ports_StaticMemory.deframer]
-      commDriver.$recv -> deframer.framedIn
-      deframer.framedDeallocate -> staticMemory.bufferDeallocate[Ports_StaticMemory.deframer]
+      deframer.framedDeallocate -> bufferManager.bufferSendIn
 
       deframer.comOut -> cmdDisp.seqCmdBuff
       cmdDisp.seqCmdStatus -> deframer.cmdResponseIn
 
-      deframer.bufferAllocate -> staticMemory.bufferAllocate[Ports_StaticMemory.deframing]
-      deframer.bufferDeallocate -> staticMemory.bufferDeallocate[Ports_StaticMemory.deframing]
-      
+      deframer.bufferAllocate -> bufferManager.bufferGetCallee
+      deframer.bufferDeallocate -> bufferManager.bufferSendIn
     }
 
     connections due_dev {
       # Add here connections to user-defined components
+      blinker.gpioSet -> gpioDriver.gpioWrite
     }
 
   }

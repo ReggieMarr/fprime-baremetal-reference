@@ -35,10 +35,12 @@ module due_dev {
   # ----------------------------------------------------------------------
   # Passive component instances
   # ----------------------------------------------------------------------
+  instance bufferManager: Svc.BufferManager base id 0x0500
 
   instance rateGroup1: Svc.PassiveRateGroup base id 0x1000
+  instance rateGroup2: Svc.PassiveRateGroup base id 0x1100
 
-  instance commDriver: Arduino.StreamDriver base id 0x4000
+  instance comDriver: Arduino.StreamDriver base id 0x4000
 
   instance framer: Svc.Framer base id 0x4100
 
@@ -46,7 +48,7 @@ module due_dev {
 
   # instance fatalHandler: Svc.FatalHandler base id 0x4300
 
-  instance timeHandler: Arduino.ArduinoTime base id 0x4400 \
+  instance systemTime: Arduino.ArduinoTime base id 0x4400 \
 
   instance rateGroupDriver: Svc.RateGroupDriver base id 0x4500
 
@@ -59,5 +61,13 @@ module due_dev {
   # instance systemResources: Svc.SystemResources base id 0x4900
 
   instance rateDriver: Arduino.HardwareRateDriver base id 0x4A00
+
+  instance gpioDriver: Arduino.GpioDriver base id 0x5000
+
+  instance gpioRadioReset: Arduino.GpioDriver base id 0x5010
+
+  # instance i2cDriver: Arduino.I2cDriver base id 0x5100
+
+  instance blinker: Components.LedBlinker base id 0x10000
 
 }

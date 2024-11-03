@@ -7,7 +7,6 @@
 #
 #####
 
-set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 # Deployment is only compatible with the Arduino platform
 restrict_platforms(ArduinoFw)
 
